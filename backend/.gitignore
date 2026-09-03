@@ -1,8 +1,9 @@
 venv/
-__pycache__/
+__pycache__/**/*
 *.pyc
 .env
 .env.local
 *.csv
+*.txt
 node_modules/
 dist/

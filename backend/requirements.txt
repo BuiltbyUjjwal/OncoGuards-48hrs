@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+pydantic
+xgboost
+shap
+pandas
+numpy
+scikit-learn
+imbalanced-learn
+sentence-transformers
+faiss-cpu
+python-dotenv
+openai

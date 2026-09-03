@@ -1,8 +1,9 @@
 import sys
 from pathlib import Path
 
-# Same sys.path shim as brain/rule_engine.py and brain/ml_layer.py - see the
-# comment in brain/rule_engine.py for why this is here.
+# Make the project root importable (so `from schemas import ...` below works)
+# whether this file is run directly (`python brain/rule_engine.py`), as a
+# module (`python -m brain.rule_engine`), or imported normally by main.py.
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from enum import Enum

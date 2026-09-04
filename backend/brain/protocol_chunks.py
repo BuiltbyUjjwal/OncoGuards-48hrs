@@ -157,4 +157,86 @@ protocol_chunks = [
         "text": "A low risk assessment does not completely rule out disease. Individuals should continue monitoring symptoms and seek medical advice if new concerns develop.",
         "cancer_types": ["general"],
     },
+
+        # --- Added: Layer 3 strengthening pass ---
+    {
+        "title": "Low-dose CT screening for high-risk groups",
+        "text": "Annual low-dose CT screening is recommended for long-term heavy smokers, particularly those aged 50 and above, even without symptoms. This can detect lung changes earlier than symptom-based evaluation alone.",
+        "cancer_types": ["lung"],
+    },
+    {
+        "title": "Unexplained weight loss as a warning sign",
+        "text": "Losing a noticeable amount of weight without trying, especially alongside respiratory symptoms, is a warning sign that should prompt medical evaluation rather than being attributed to diet or stress alone.",
+        "cancer_types": ["lung"],
+    },
+    {
+        "title": "Persistent chest pain evaluation",
+        "text": "Chest pain that is persistent, worsens with deep breathing or coughing, or does not have an obvious cause such as injury should be evaluated by a doctor.",
+        "cancer_types": ["lung"],
+    },
+    {
+        "title": "Passive smoking and second-hand smoke exposure",
+        "text": "Regular exposure to second-hand smoke at home or work increases lung cancer risk even for people who have never smoked themselves. This exposure history is a relevant part of risk evaluation.",
+        "cancer_types": ["lung"],
+    },
+    {
+        "title": "Breast self-awareness practice",
+        "text": "Becoming familiar with the normal look and feel of your breasts makes it easier to notice changes early. This is a complement to, not a replacement for, clinical screening.",
+        "cancer_types": ["breast"],
+    },
+    {
+        "title": "Mammography screening interval by age",
+        "text": "Women aged 40 to 49 should discuss individual screening timing with a doctor based on personal risk factors; women 50 and above are generally recommended to have regular mammograms at set intervals.",
+        "cancer_types": ["breast"],
+    },
+    {
+        "title": "Breast pain alone is usually not a primary warning sign",
+        "text": "Breast pain without a lump, skin change, or discharge is common and often linked to the menstrual cycle rather than cancer. It's still worth mentioning at a checkup, but pain alone is not typically an urgent red flag the way a lump or skin change is.",
+        "cancer_types": ["breast"],
+    },
+    {
+        "title": "Dense breast tissue and screening",
+        "text": "Dense breast tissue can make mammograms harder to interpret and is itself associated with a modestly higher risk. Women with known dense breast tissue may be advised to have supplemental screening alongside standard mammography.",
+        "cancer_types": ["breast"],
+    },
+    {
+        "title": "Routine dental check-ups aid early detection",
+        "text": "Regular dental visits allow a professional to notice early mouth changes a person might not see themselves, which is one of the most effective ways oral cancer gets caught early.",
+        "cancer_types": ["oral"],
+    },
+    {
+        "title": "Betel nut and paan-specific risk",
+        "text": "Chewing betel nut or paan, with or without tobacco, directly increases oral cancer risk and is associated with submucous fibrosis, a condition that can progress toward malignancy. Frequency and duration of use both matter.",
+        "cancer_types": ["oral"],
+    },
+    {
+        "title": "Pain or difficulty chewing as a symptom",
+        "text": "New or persistent pain, numbness, or difficulty chewing and moving the jaw, especially alongside a mouth ulcer or patch, should be evaluated promptly.",
+        "cancer_types": ["oral"],
+    },
+    {
+        "title": "HPV vaccination as primary prevention",
+        "text": "HPV vaccination, most effective when given before the start of sexual activity, significantly reduces the risk of developing cervical cancer later in life and is a key primary prevention tool alongside screening.",
+        "cancer_types": ["cervical"],
+    },
+    {
+        "title": "Bleeding after intercourse",
+        "text": "Bleeding specifically triggered by intercourse, even if infrequent, is a distinct warning sign from irregular period bleeding and should be mentioned to a doctor rather than dismissed.",
+        "cancer_types": ["cervical"],
+    },
+    {
+        "title": "Cervical cancer is highly preventable",
+        "text": "With regular screening and, where available, HPV vaccination, cervical cancer is one of the most preventable cancers. Precancerous changes usually take years to develop, which gives screening a wide window to catch them early.",
+        "cancer_types": ["cervical"],
+    },
+    {
+        "title": "What to expect after a screening referral",
+        "text": "A referral for further screening is a precautionary step, not a diagnosis. Most people referred for follow-up testing after an initial risk assessment do not turn out to have cancer.",
+        "cancer_types": ["general"],
+    },
+    {
+        "title": "Low-cost and government screening access in India",
+        "text": "Government district hospitals and primary health centers offer free or low-cost cancer screening services, including under national health mission programs, making initial evaluation accessible regardless of ability to pay for private care.",
+        "cancer_types": ["general"],
+    },
 ]

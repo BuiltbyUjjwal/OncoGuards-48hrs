@@ -4,6 +4,6 @@ __pycache__/**/*
 .env
 .env.local
 *.csv
-*.txt
+risk.txt
 node_modules/
 dist/

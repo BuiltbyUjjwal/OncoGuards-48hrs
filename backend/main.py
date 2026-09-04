@@ -1,9 +1,14 @@
-from fastapi import FastAPI
+import time
+from collections import defaultdict
+from typing import Literal
+
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 from schemas import PatientProfile, Gender, CancerType, most_severe_tier
 from brain.rule_engine import score_all_cancer_risks
 from brain.ml_layer import predict_ml_risk
 from brain.rag_llm_layer import generate_guidance
+from brain.chat_layer import generate_chat_reply
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -21,6 +26,65 @@ app.add_middleware(
     allow_methods=["*"], # Which HTTP methods are permitted. (All)
     allow_headers=["*"], # Which request headers are permitted. (All)
 )
+
+# ============================================================================
+# MINIMAL RATE LIMITING (chat endpoint only)
+#
+# In-memory, per-process, per-IP sliding window. Named limitation, not a
+# production claim: this resets on restart and doesn't coordinate across
+# multiple worker processes - a real deployment would do this at the
+# gateway/proxy level (nginx, Cloudflare) or with Redis. Its only job here is
+# to stop an unauthenticated endpoint from accidentally burning through the
+# free OpenRouter quota (repeated testing, a stray loop on the frontend,
+# etc.) - not to defend against a determined attacker. Scoped to /api/v1/chat
+# only; /api/v1/assessment's behavior is untouched.
+# ============================================================================
+_RATE_LIMIT_WINDOW_SECONDS = 60
+_RATE_LIMIT_MAX_REQUESTS = 10  # per IP, per window
+_request_log: dict[str, list[float]] = defaultdict(list)
+
+
+def _enforce_rate_limit(request: Request) -> None:
+    client_ip = request.client.host if request.client else "unknown"
+    now = time.monotonic()
+    window_start = now - _RATE_LIMIT_WINDOW_SECONDS
+
+    recent = [t for t in _request_log[client_ip] if t > window_start]
+    if len(recent) >= _RATE_LIMIT_MAX_REQUESTS:
+        raise HTTPException(
+            status_code=429,
+            detail="Too many chat requests - please wait a moment and try again.",
+        )
+
+    recent.append(now)
+    _request_log[client_ip] = recent
+
+
+# ============================================================================
+# CHAT SCHEMAS
+#
+# Stateless by design (matches README's "Current Scope & Known Limitations" -
+# no DB yet): `messages` is the FULL client-managed conversation history,
+# resent every turn, same pattern as the Anthropic Messages API. `cancer_type`
+# / `context_summary` are optional grounding hints - see brain/chat_layer.py's
+# generate_chat_reply() docstring for exactly how they're used.
+# ============================================================================
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+class ChatRequest(BaseModel):
+    messages: list[ChatMessage]
+    cancer_type: CancerType | None = None
+    context_summary: str | None = None
+
+class ChatResponse(BaseModel):
+    reply: str
+    retrieved_sources: list[str]
+    grounded: bool
+
+_MAX_MESSAGE_CHARS = 2000
+_MAX_MESSAGES_PER_REQUEST = 40
 
 class PatientInput(BaseModel):
     age: int
@@ -226,19 +290,83 @@ def assessment(patient: PatientInput):
             }
             continue
 
-        # Layer 2: XGBoost + SHAP if a trained model exists for this cancer
-        # type yet, otherwise a graceful Layer-1-only placeholder (see
-        # brain/ml_layer.py's _MODEL_REGISTRY).
-        ml_result = predict_ml_risk(profile, rule_result, cancer_type=cancer_type)
+        # Layer 2 + Layer 3, isolated per cancer type (NEW). Layer 3 already
+        # degrades gracefully on its own (an LLM failure falls back to static
+        # text inside generate_guidance() and never raises). This try/except
+        # is the outer safety net for anything ELSE unexpected - most
+        # plausibly Layer 2, which has no such fallback of its own: a bad
+        # model file, an unexpected SHAP shape, whatever. Without this, one
+        # cancer type raising turns the WHOLE multi-cancer response into a
+        # 500 - the patient loses lung+breast+cervical results just because,
+        # say, oral's placeholder path had an edge case. Layer 1's result
+        # (already computed above) is always safe to return regardless.
+        try:
+            # Layer 2: XGBoost + SHAP if a trained model exists for this
+            # cancer type yet, otherwise a graceful Layer-1-only placeholder
+            # (see brain/ml_layer.py's _MODEL_REGISTRY).
+            ml_result = predict_ml_risk(profile, rule_result, cancer_type=cancer_type)
 
-        # Layer 3: RAG-grounded guidance, cancer-type-aware.
-        layer3_result = generate_guidance(rule_result, ml_result, cancer_type=cancer_type)
+            # Layer 3: RAG-grounded guidance, cancer-type-aware.
+            layer3_result = generate_guidance(rule_result, ml_result, cancer_type=cancer_type)
 
-        report[cancer_type_value] = {
-            "overall_tier": most_severe_tier(rule_result.tier, ml_result.tier).value,
-            "layer1": rule_result,
-            "layer2": ml_result,
-            "layer3": layer3_result,
-        }
+            report[cancer_type_value] = {
+                "overall_tier": most_severe_tier(rule_result.tier, ml_result.tier).value,
+                "layer1": rule_result,
+                "layer2": ml_result,
+                "layer3": layer3_result,
+            }
+        except Exception as e:
+            print(f"[assessment] {cancer_type_value}: Layer 2/3 failed unexpectedly, "
+                  f"degrading to Layer-1-only for this cancer type. Error: {e}")
+            report[cancer_type_value] = {
+                "overall_tier": rule_result.tier.value,
+                "layer1": rule_result,
+                "layer2": None,
+                "layer3": None,
+            }
 
     return report
+
+@app.post("/api/v1/chat", response_model=ChatResponse)
+def chat(chat_request: ChatRequest, request: Request):
+    """
+    Conversational counterpart to /api/v1/assessment - see brain/chat_layer.py
+    for the full design (retrieval, grounding, safety check, degrade-gracefully
+    behavior). Stateless: no DB yet (see README), so the frontend resends the
+    whole conversation each turn.
+
+    Meant to replace the Frontend's current AIAssistantPage.tsx integration,
+    which calls Groq/Gemini directly from the browser today - ungrounded by
+    the ICMR/WHO protocol base and with client-exposed API keys (see README's
+    "Current Scope & Known Limitations"). This endpoint runs through the same
+    FAISS-grounded pipeline Layer 3 uses for the risk report, and keeps the
+    LLM key server-side like everything else in brain/.
+    """
+    _enforce_rate_limit(request)
+
+    if not chat_request.messages:
+        raise HTTPException(status_code=422, detail="messages must not be empty.")
+    if chat_request.messages[-1].role != "user":
+        raise HTTPException(status_code=422, detail="The last message must be from the user.")
+    if len(chat_request.messages) > _MAX_MESSAGES_PER_REQUEST:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Too many messages in one request (max {_MAX_MESSAGES_PER_REQUEST}).",
+        )
+    if any(len(m.content) > _MAX_MESSAGE_CHARS for m in chat_request.messages):
+        raise HTTPException(
+            status_code=422,
+            detail=f"A message exceeds the {_MAX_MESSAGE_CHARS}-character limit.",
+        )
+
+    result = generate_chat_reply(
+        messages=[m.model_dump() for m in chat_request.messages],
+        cancer_type=chat_request.cancer_type,
+        context_summary=chat_request.context_summary,
+    )
+
+    return ChatResponse(
+        reply=result.reply,
+        retrieved_sources=result.retrieved_sources,
+        grounded=result.grounded,
+    )

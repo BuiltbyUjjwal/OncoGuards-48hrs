@@ -1,0 +1,146 @@
+.brand-logo-container {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  user-select: none;
+  text-decoration: none;
+}
+
+.brand-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  border-radius: var(--radius-md, 12px);
+  box-shadow: none;
+  transition: transform var(--transition-fast, 0.2s ease), filter var(--transition-fast, 0.2s ease);
+  overflow: hidden;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+}
+
+.brand-logo-container:hover .brand-icon-wrapper,
+.brand-icon-only:hover {
+  transform: translateY(-1px);
+  filter: drop-shadow(0 4px 10px rgba(37, 99, 235, 0.25));
+}
+
+.brand-icon-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: none;
+  outline: none;
+  border-radius: inherit;
+}
+
+.brand-logo-small .brand-icon-wrapper {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+}
+
+.brand-logo-normal .brand-icon-wrapper {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+}
+
+.brand-logo-large .brand-icon-wrapper {
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+}
+
+.brand-text-group {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.brand-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.brand-name {
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', system-ui, sans-serif);
+  font-weight: 800;
+  color: #0F172A;
+  letter-spacing: -0.03em;
+}
+
+.brand-logo-small .brand-name {
+  font-size: 1.15rem;
+}
+
+.brand-logo-normal .brand-name {
+  font-size: 1.38rem;
+}
+
+.brand-logo-large .brand-name {
+  font-size: 1.85rem;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0284C7 0%, #06B6D4 100%);
+  color: #FFFFFF;
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', system-ui, sans-serif);
+  font-weight: 800;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  padding: 2px 7px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  box-shadow: 0 1px 3px rgba(6, 182, 212, 0.3);
+}
+
+.brand-logo-large .brand-badge {
+  font-size: 0.82rem;
+  padding: 3px 9px;
+  border-radius: 7px;
+}
+
+.brand-subtext {
+  font-size: 0.76rem;
+  color: #64748B;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-top: 4px;
+}
+
+.brand-logo-large .brand-subtext {
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+/* Full Banner Variant */
+.brand-full-banner-img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+}
+
+.brand-logo-banner.brand-logo-large .brand-full-banner-img {
+  max-height: 80px;
+}
+
+.brand-logo-banner.brand-logo-normal .brand-full-banner-img {
+  max-height: 54px;
+}
+
+.brand-logo-banner.brand-logo-small .brand-full-banner-img {
+  max-height: 38px;
+}

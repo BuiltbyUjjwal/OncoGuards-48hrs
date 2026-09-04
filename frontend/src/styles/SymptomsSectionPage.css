@@ -1,0 +1,411 @@
+.symptoms-layout-root {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--color-page-bg-blue);
+  display: flex;
+}
+
+.symptoms-main-area {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 44px 54px;
+  overflow-y: auto;
+}
+
+.symptoms-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.symptoms-container {
+  flex: 1;
+  max-width: 780px;
+  width: 100%;
+}
+
+.symptoms-form-card {
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-soft-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 36px 42px;
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+.symptoms-counter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.symptoms-count-pill {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-primary-blue);
+  background-color: var(--color-primary-blue-light);
+  border: 1px solid var(--color-soft-sky-blue);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+/* Accordion Categories List */
+.symptoms-accordions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.symptom-category-card {
+  border: 1.5px solid var(--color-soft-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-white);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.symptom-category-card:hover {
+  border-color: var(--color-sky-blue);
+}
+
+.accordion-header-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background-color: #FAFDFF;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color var(--transition-fast);
+}
+
+.accordion-header-btn:hover {
+  background-color: var(--color-primary-blue-light);
+}
+
+.accordion-title-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.category-title-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.accordion-category-title {
+  font-family: var(--font-family-primary);
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+.cat-badge-pill {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--color-teal-accent);
+  background-color: var(--color-light-teal);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.accordion-category-subtitle {
+  font-size: 0.8rem;
+  color: var(--color-muted-text);
+}
+
+.accordion-chevron-icon {
+  font-size: 0.74rem;
+  color: var(--color-muted-text);
+  transition: transform var(--transition-fast);
+}
+
+.accordion-chevron-icon.open {
+  transform: rotate(180deg);
+}
+
+/* Accordion Body */
+.accordion-body-panel {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--color-soft-border);
+  background-color: var(--color-white);
+}
+
+.symptom-cards-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.symptom-item-card {
+  border: 1.5px solid var(--color-soft-border);
+  border-radius: var(--radius-md);
+  background-color: #FAFDFF;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.symptom-item-card.is-selected {
+  background-color: var(--color-primary-blue-light);
+  border-color: var(--color-primary-blue);
+  box-shadow: var(--shadow-xs);
+}
+
+.symptom-card-header-clickable {
+  padding: 14px 16px;
+  cursor: pointer;
+  outline: none;
+}
+
+.symptom-left-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.custom-checkbox-box {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  border: 2px solid var(--color-soft-border);
+  background-color: var(--color-white);
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+  transition: all var(--transition-fast);
+}
+
+.custom-checkbox-box.checked {
+  background-color: var(--color-primary-blue);
+  border-color: var(--color-primary-blue);
+}
+
+.symptom-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.symptom-name-title {
+  font-family: var(--font-family-primary);
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--color-dark-text);
+}
+
+.symptom-desc-sub {
+  font-size: 0.8rem;
+  color: var(--color-muted-text);
+  line-height: 1.35;
+}
+
+/* Inline Duration Picker Box */
+.symptom-duration-picker-box {
+  padding: 12px 16px 14px;
+  border-top: 1px dashed var(--color-soft-sky-blue);
+  background-color: #F8FCFE;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.symptom-picker-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.duration-picker-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-teal-accent);
+}
+
+.duration-pills-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.duration-pill-btn {
+  padding: 5px 12px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-family-primary);
+  font-size: 0.76rem;
+  font-weight: 600;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-soft-border);
+  color: var(--color-dark-text);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.duration-pill-btn:hover {
+  border-color: var(--color-primary-blue);
+  background-color: var(--color-primary-blue-light);
+}
+
+.duration-pill-btn.is-active {
+  background-color: var(--color-primary-blue);
+  border-color: var(--color-primary-blue);
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+/* Symptom Severity Range Slider (1-9 Model Scale) */
+.symptom-slider-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 0 2px;
+}
+
+.severity-rating-badge {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-primary-blue, #1D4ED8);
+  background-color: var(--color-primary-blue-light, #EFF6FF);
+  border: 1px solid #BFDBFE;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+
+.symptom-severity-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #0F766E, #F59E0B, #DC2626);
+  outline: none;
+  cursor: pointer;
+  margin: 6px 0;
+}
+
+.symptom-severity-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1D4ED8;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.symptom-severity-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.symptom-severity-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1D4ED8;
+  border: 2px solid #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+  cursor: pointer;
+}
+
+.slider-ticks-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-muted-text);
+  padding: 0 2px;
+}
+
+/* None of Above */
+.none-of-above-container {
+  margin-top: 8px;
+}
+
+.none-select-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background-color: #FAFDFF;
+  border: 1.5px solid var(--color-soft-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-family-primary);
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--color-dark-text);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: left;
+}
+
+.none-select-btn:hover {
+  background-color: var(--color-primary-blue-light);
+  border-color: var(--color-sky-blue);
+}
+
+.none-select-btn.is-active {
+  background-color: var(--color-primary-blue-light);
+  border-color: var(--color-primary-blue);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Symptoms Actions Footer */
+.symptoms-actions-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 18px;
+  border-top: 1px solid #E0F2FE;
+  margin-top: 12px;
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .symptoms-main-area {
+    padding: 24px 18px 80px;
+  }
+  .symptoms-form-card {
+    padding: 26px 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .duration-pills-row {
+    flex-direction: column;
+  }
+  .duration-pill-btn {
+    width: 100%;
+    text-align: center;
+  }
+  .symptoms-actions-footer {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+  .symptoms-actions-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

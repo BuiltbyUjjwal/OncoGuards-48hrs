@@ -1,0 +1,618 @@
+.results-layout-root {
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--color-page-bg, #EAF6FF);
+  display: flex;
+}
+
+.results-main-area {
+  flex: 1;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 36px 40px 60px;
+  overflow-y: auto;
+}
+
+/* Top Header & Breadcrumbs */
+.results-top-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.results-container {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Main Top Card */
+.main-result-card {
+  background-color: var(--color-white, #FFFFFF);
+  border: 1.5px solid var(--color-soft-border, #CFE8F7);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-sm);
+  padding: 32px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.result-card-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #E0F2FE;
+}
+
+.assessment-date-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-secondary-text, #64748B);
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  padding: 4px 12px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.result-header-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.results-main-heading {
+  font-family: var(--font-family-primary);
+  font-size: 1.95rem;
+  font-weight: 800;
+  color: var(--color-primary-text, #172033);
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.results-subtext {
+  font-size: 0.95rem;
+  color: var(--color-secondary-text, #64748B);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ========================================================================= */
+/* SEMI-CIRCULAR RISK GAUGE STYLES */
+/* ========================================================================= */
+.gauge-outer-card {
+  background-color: #FAFDFF;
+  border: 1.5px solid var(--color-soft-border, #CFE8F7);
+  border-radius: var(--radius-md, 12px);
+  padding: 24px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.risk-gauge-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 360px;
+}
+
+.risk-gauge-svg {
+  width: 100%;
+  height: auto;
+  max-width: 340px;
+}
+
+.gauge-center-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-top: -12px;
+  text-align: center;
+}
+
+.gauge-score-digits {
+  font-family: var(--font-family-primary);
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--color-primary-text, #172033);
+  line-height: 1.1;
+}
+
+.gauge-category-pill {
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 3px 12px;
+  border-radius: var(--radius-full, 9999px);
+  background-color: var(--color-main-blue-light, #EFF6FF);
+  color: var(--color-main-blue, #2563EB);
+  border: 1px solid #BAE6FD;
+}
+
+.gauge-category-pill.cat-low {
+  background-color: #F0FDF4;
+  color: #166534;
+  border-color: #BBF7D0;
+}
+
+.gauge-category-pill.cat-mod {
+  background-color: #EFF6FF;
+  color: #1D4ED8;
+  border-color: #BFDBFE;
+}
+
+.gauge-category-pill.cat-high {
+  background-color: #FEF2F2;
+  color: #991B1B;
+  border-color: #FECACA;
+}
+
+.gauge-api-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--color-muted-text, #64748B);
+  margin-top: 2px;
+}
+
+/* ========================================================================= */
+/* 4 PER-CANCER INDEPENDENT CARDS GRID */
+/* ========================================================================= */
+.cancer-eval-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cancer-eval-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cancer-eval-section-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #172033;
+  margin: 0;
+}
+
+.cancer-eval-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 20px;
+}
+
+.cancer-eval-card {
+  background-color: #FFFFFF;
+  border: 1.5px solid #CFE8F7;
+  border-radius: var(--radius-md, 14px);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.cancer-eval-card:hover {
+  border-color: #38BDF8;
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+}
+
+.cancer-eval-card.is-not-applicable {
+  background-color: #F8FAFC;
+  opacity: 0.85;
+  border-color: #E2E8F0;
+}
+
+.cancer-eval-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.cancer-name-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cancer-card-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #172033;
+  margin: 0;
+}
+
+/* Model Type Badge */
+.model-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 6px;
+  width: fit-content;
+}
+
+.model-badge.ml-model {
+  background-color: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.model-badge.prototype-model {
+  background-color: #FAF5FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
+}
+
+/* Risk Tier Chip */
+.risk-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  padding: 5px 12px;
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+.risk-tier-badge.tier-low {
+  background-color: #F0FDF4;
+  color: #0F766E;
+  border: 1px solid #A7F3D0;
+}
+
+.risk-tier-badge.tier-mod {
+  background-color: #FFFBEB;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.risk-tier-badge.tier-high {
+  background-color: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.risk-tier-badge.tier-na {
+  background-color: #F1F5F9;
+  color: #64748B;
+  border: 1px solid #CBD5E1;
+}
+
+/* Key Factors list */
+.cancer-factors-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cancer-factors-heading {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #64748B;
+  margin: 0;
+}
+
+.cancer-factors-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.cancer-factors-list li {
+  font-size: 0.84rem;
+  color: #334155;
+  line-height: 1.4;
+}
+
+/* Recommendation callout */
+.cancer-guideline-box {
+  background-color: #F8FCFD;
+  border: 1px solid #BAE6FD;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 0.82rem;
+  color: #0F766E;
+  line-height: 1.45;
+  margin-top: auto;
+}
+
+/* ========================================================================= */
+/* SECTION BOXES */
+/* ========================================================================= */
+.result-section-box {
+  background-color: var(--color-white, #FFFFFF);
+  border: 1.5px solid var(--color-soft-border, #CFE8F7);
+  border-radius: var(--radius-lg, 16px);
+  box-shadow: var(--shadow-sm);
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.section-box-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.section-box-title {
+  font-family: var(--font-family-primary);
+  font-size: 1.22rem;
+  font-weight: 800;
+  color: var(--color-primary-text, #172033);
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+.section-box-badge {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #0F766E;
+  background-color: #CCFBF1;
+  border: 1px solid #A7F3D0;
+  padding: 3px 10px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+/* Dynamic Placeholder */
+.dynamic-placeholder-state {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background-color: #FAFDFF;
+  border: 1.5px dashed var(--color-soft-border, #CFE8F7);
+  border-radius: var(--radius-md, 12px);
+  padding: 20px 24px;
+}
+
+.placeholder-icon-box {
+  color: var(--color-main-blue, #2563EB);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.placeholder-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.placeholder-heading {
+  font-family: var(--font-family-primary);
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--color-primary-text, #172033);
+  margin: 0;
+}
+
+.placeholder-body {
+  font-size: 0.88rem;
+  color: var(--color-secondary-text, #64748B);
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ========================================================================= */
+/* HORIZONTAL FACTORS BAR LIST */
+/* ========================================================================= */
+.factors-horizontal-bars-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.factor-bar-row {
+  background-color: #FAFDFF;
+  border: 1.5px solid var(--color-soft-border, #CFE8F7);
+  border-radius: var(--radius-md, 12px);
+  padding: 14px 18px;
+  transition: all var(--transition-fast, 150ms ease);
+}
+
+.factor-bar-row:hover {
+  background-color: var(--color-white, #FFFFFF);
+  border-color: #38BDF8;
+}
+
+.factor-bar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.factor-bar-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.factor-bar-title {
+  font-family: var(--font-family-primary);
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: var(--color-primary-text, #172033);
+}
+
+.factor-influence-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: var(--radius-full, 9999px);
+}
+
+.factor-influence-pill.high {
+  background-color: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+.factor-influence-pill.mod {
+  background-color: #EFF6FF;
+  color: #2563EB;
+  border: 1px solid #BAE6FD;
+}
+
+.factor-influence-pill.low {
+  background-color: #F0FDF4;
+  color: #0F766E;
+  border: 1px solid #A7F3D0;
+}
+
+.factor-bar-track {
+  width: 100%;
+  height: 7px;
+  background-color: #E2EFF9;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.factor-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.factor-bar-fill.high {
+  background-color: #E11D48;
+}
+
+.factor-bar-fill.mod {
+  background-color: #2563EB;
+}
+
+.factor-bar-fill.low {
+  background-color: #0F766E;
+}
+
+.factor-bar-desc {
+  font-size: 0.83rem;
+  color: var(--color-secondary-text, #64748B);
+  line-height: 1.4;
+  margin: 2px 0 0 0;
+}
+
+/* ========================================================================= */
+/* DISCLAIMER CARD */
+/* ========================================================================= */
+.medical-disclaimer-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background-color: #F0FDF4;
+  border: 1.5px solid #A7F3D0;
+  border-radius: var(--radius-md, 12px);
+  padding: 18px 22px;
+}
+
+.disclaimer-icon {
+  color: #0F766E;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.disclaimer-text-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.disclaimer-title {
+  font-family: var(--font-family-primary);
+  font-size: 0.94rem;
+  font-weight: 700;
+  color: #0F766E;
+  margin: 0;
+}
+
+.disclaimer-body {
+  font-size: 0.86rem;
+  color: #334155;
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* ========================================================================= */
+/* ACTIONS FOOTER */
+/* ========================================================================= */
+.results-actions-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 6px;
+}
+
+.btn-view-explanation {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 14px 30px;
+  border-radius: var(--radius-md, 12px);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .results-main-area {
+    padding: 24px 18px 36px;
+  }
+  .main-result-card,
+  .result-section-box {
+    padding: 24px 20px;
+  }
+  .cancer-eval-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .results-actions-footer {
+    flex-direction: column-reverse;
+  }
+  .results-actions-footer .btn,
+  .btn-view-explanation {
+    width: 100%;
+    justify-content: center;
+  }
+  .gauge-score-digits {
+    font-size: 1.75rem;
+  }
+}

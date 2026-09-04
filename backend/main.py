@@ -21,6 +21,7 @@ app.add_middleware(
     "http://127.0.0.1:3000",
     "http://localhost:5173",   # Vite's default — kept in case anything else assumes it
     "http://127.0.0.1:5173",
+    "http://localhost:3001/"
     ], # which frontend URL(s) can access the API.
     allow_credentials=True, # Allows cookies/auth tokens to be sent.
     allow_methods=["*"], # Which HTTP methods are permitted. (All)

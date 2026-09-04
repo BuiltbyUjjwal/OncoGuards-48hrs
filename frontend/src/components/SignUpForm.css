@@ -1,0 +1,213 @@
+.signup-card {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 38px 36px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: box-shadow var(--transition-normal);
+}
+
+.signup-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card Header */
+.signup-card-header {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.signup-heading {
+  font-family: var(--font-family-primary);
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--color-primary-text);
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
+}
+
+.signup-subtext {
+  font-size: 0.92rem;
+  color: var(--color-secondary-text);
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+/* Alerts */
+.signup-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.86rem;
+  line-height: 1.4;
+  margin-bottom: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.signup-alert-error {
+  background-color: var(--color-error-bg);
+  border: 1px solid var(--color-error-border);
+  color: var(--color-error);
+}
+
+.signup-alert-success {
+  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  color: var(--color-success);
+}
+
+/* Form Groups */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Terms Checkbox */
+.terms-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.checkbox-custom-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.checkbox-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+}
+
+.checkbox-native-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.checkbox-custom-box {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--color-border);
+  border-radius: 4px;
+  background-color: #FAFDFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.checkbox-custom-label:hover .checkbox-custom-box {
+  border-color: var(--color-main-blue);
+}
+
+.checkbox-native-input:focus-visible + .checkbox-custom-box {
+  outline: 2px solid var(--color-main-blue);
+  outline-offset: 2px;
+}
+
+.checkbox-custom-box.checked {
+  background-color: var(--color-main-blue);
+  border-color: var(--color-main-blue);
+  color: var(--color-white);
+}
+
+.checkbox-custom-box.error {
+  border-color: var(--color-error);
+  background-color: var(--color-error-bg);
+}
+
+.check-svg {
+  color: var(--color-white);
+}
+
+.terms-text {
+  font-size: 0.84rem;
+  color: var(--color-secondary-text);
+  line-height: 1.45;
+}
+
+.terms-link {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--color-main-blue);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color var(--transition-fast);
+}
+
+.terms-link:hover {
+  color: var(--color-main-blue-hover);
+}
+
+.terms-link:focus-visible {
+  outline: 2px solid var(--color-main-blue);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* Divider */
+.signup-divider {
+  display: flex;
+  align-items: center;
+  margin: 20px 0;
+  gap: 14px;
+}
+
+/* Bottom Sign In Navigation */
+.signup-footer {
+  margin-top: 22px;
+  text-align: center;
+}
+
+.signin-prompt {
+  font-size: 0.9rem;
+  color: var(--color-secondary-text);
+}
+
+.signin-link {
+  font-weight: 700;
+  color: var(--color-main-blue);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color var(--transition-fast);
+}
+
+.signin-link:hover {
+  color: var(--color-main-blue-hover);
+  text-decoration: underline;
+}
+
+.signin-link:focus-visible {
+  outline: 2px solid var(--color-main-blue);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+@media (max-width: 520px) {
+  .signup-card {
+    padding: 28px 20px;
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+  }
+}

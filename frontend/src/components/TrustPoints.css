@@ -1,0 +1,80 @@
+.trust-points-container {
+  width: 100%;
+  margin-top: 24px;
+}
+
+.trust-points-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.trust-point-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  box-shadow: var(--shadow-xs);
+  transition: all var(--transition-normal);
+}
+
+.trust-point-card:hover {
+  border-color: var(--color-sky-blue);
+  box-shadow: var(--shadow-sm);
+  transform: translateX(3px);
+}
+
+.trust-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  background-color: var(--color-soft-blue-light);
+  color: var(--color-dark-teal);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.trust-text-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.trust-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.trust-title {
+  font-family: var(--font-family-primary);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-primary-text);
+  letter-spacing: -0.01em;
+}
+
+.trust-check-icon {
+  color: var(--color-dark-teal);
+  flex-shrink: 0;
+}
+
+.trust-desc {
+  font-size: 0.82rem;
+  color: var(--color-secondary-text);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+@media (max-width: 900px) {
+  .trust-point-card {
+    padding: 12px 14px;
+  }
+}

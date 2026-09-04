@@ -1,0 +1,261 @@
+.assessment-side-panel {
+  width: 330px;
+  min-width: 330px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 36px;
+  align-self: flex-start;
+}
+
+/* Side Panel Card */
+.side-panel-card {
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-soft-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 22px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.panel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--color-primary-blue);
+  background-color: var(--color-primary-blue-light);
+  border: 1px solid var(--color-soft-sky-blue);
+  padding: 3px 9px;
+  border-radius: var(--radius-full);
+}
+
+.panel-step-indicator {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-muted-text);
+}
+
+.panel-title {
+  font-family: var(--font-family-primary);
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: var(--color-dark-text);
+  margin: 0;
+}
+
+/* Progress Block */
+.panel-progress-block {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  background-color: var(--color-very-light-blue);
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-soft-border);
+}
+
+.panel-progress-labels {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+}
+
+.progress-status-text {
+  font-weight: 600;
+  color: var(--color-muted-text);
+}
+
+.progress-pct-number {
+  font-family: var(--font-family-primary);
+  font-weight: 800;
+  color: var(--color-primary-blue);
+}
+
+.panel-progress-track {
+  width: 100%;
+  height: 6px;
+  background-color: #E2EFF9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.panel-progress-fill {
+  height: 100%;
+  background-color: var(--color-primary-blue);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+/* Steps Checklist */
+.panel-steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.panel-step-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+}
+
+.panel-step-item.is-completed {
+  background-color: #F8FCFD;
+}
+
+.panel-step-item.is-current {
+  background-color: var(--color-primary-blue-light);
+  border-color: var(--color-soft-sky-blue);
+}
+
+.panel-step-item.is-upcoming {
+  opacity: 0.7;
+}
+
+.step-bullet-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-done-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-active-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--color-primary-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-active-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-primary-blue);
+}
+
+.step-pending-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #EEF4F7;
+  color: var(--color-muted-text);
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.step-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+
+.step-label-main {
+  font-family: var(--font-family-primary);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-dark-text);
+}
+
+.panel-step-item.is-current .step-label-main {
+  color: var(--color-primary-blue);
+}
+
+.step-label-sub {
+  font-size: 0.76rem;
+  color: var(--color-muted-text);
+}
+
+.step-current-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--color-primary-blue);
+  background-color: var(--color-white);
+  border: 1px solid var(--color-soft-sky-blue);
+  padding: 2px 7px;
+  border-radius: var(--radius-full);
+}
+
+/* Time remaining */
+.panel-time-remaining {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--color-muted-text);
+  padding-top: 10px;
+  border-top: 1px solid #EEF4F7;
+}
+
+/* Reassurance Card */
+.side-reassurance-card {
+  background-color: var(--color-teal-bg);
+  border: 1.5px solid var(--color-success-border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.reassurance-icon-box {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.reassurance-text-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reassurance-heading {
+  font-family: var(--font-family-primary);
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--color-teal-accent);
+  margin: 0;
+}
+
+.reassurance-body {
+  font-size: 0.76rem;
+  color: #334155;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Responsive Hide for Desktop vs Mobile */
+@media (max-width: 1080px) {
+  .assessment-side-panel {
+    display: none;
+  }
+}

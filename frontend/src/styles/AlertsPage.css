@@ -1,0 +1,485 @@
+/* ==========================================================================
+   ONCOGUARDS AI - ALERTS & SCREENING PAGE STYLES
+   ========================================================================== */
+
+.alerts-main-area {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.alerts-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.alerts-count-badge-active {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.02em;
+}
+
+.alerts-count-badge-clear {
+  background-color: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #BBF7D0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+/* Disclaimer Banner */
+.alerts-disclaimer-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #F0FDFA;
+  border: 1px solid #99F6E4;
+  border-radius: 12px;
+  padding: 12px 18px;
+  margin-bottom: 24px;
+}
+
+.disclaimer-icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.disclaimer-text {
+  font-size: 0.82rem;
+  color: #115E59;
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Feed Container */
+.alerts-feed-container {
+  width: 100%;
+  margin-bottom: 32px;
+}
+
+.alerts-cards-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Individual Alert Card */
+.screening-alert-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  border: 1.5px solid #FCA5A5;
+  border-left: 6px solid #DC2626;
+  padding: 22px 26px;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+}
+
+.screening-alert-card:hover {
+  box-shadow: 0 8px 22px rgba(220, 38, 38, 0.12);
+  transform: translateY(-1px);
+}
+
+.alert-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.alert-card-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.alert-bell-indicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.alert-badge-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.cancer-type-badge {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.cancer-type-badge.badge-breast {
+  background-color: #FDF2F8;
+  color: #BE185D;
+  border: 1px solid #FBCFE8;
+}
+
+.cancer-type-badge.badge-cervical {
+  background-color: #FAF5FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
+}
+
+.cancer-type-badge.badge-lung {
+  background-color: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.cancer-type-badge.badge-oral {
+  background-color: #FFFBEB;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+/* Specific Risk Alert Tiers */
+.risk-alert-card {
+  margin-bottom: 24px;
+}
+
+.risk-alert-higher {
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);
+  border: 1.5px solid #FCA5A5;
+  border-left: 6px solid #DC2626;
+  box-shadow: 0 4px 16px rgba(220, 38, 38, 0.12), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.risk-alert-higher:hover {
+  box-shadow: 0 8px 24px rgba(220, 38, 38, 0.18);
+}
+
+.risk-indicator-higher {
+  background-color: #FEE2E2;
+  border: 1.5px solid #FECACA;
+}
+
+.risk-assessment-badge {
+  font-size: 0.74rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.risk-assessment-badge-higher {
+  background-color: #FEE2E2;
+  color: #DC2626;
+  border: 1px solid #FECACA;
+}
+
+.risk-assessment-badge-moderate {
+  background-color: #FEF3C7;
+  color: #D97706;
+  border: 1px solid #FDE68A;
+}
+
+.risk-assessment-badge-lower {
+  background-color: #CCFBF1;
+  color: #0D9488;
+  border: 1px solid #99F6E4;
+}
+
+.risk-tier-badge-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.04em;
+}
+
+.risk-tier-higher {
+  background-color: #DC2626;
+  color: #FFFFFF;
+}
+
+.risk-tier-moderate {
+  background-color: #D97706;
+  color: #FFFFFF;
+}
+
+.risk-tier-lower {
+  background-color: #0D9488;
+  color: #FFFFFF;
+}
+
+.risk-recommendation-higher {
+  background-color: #FEF2F2;
+  border-color: #FECACA;
+  color: #991B1B;
+  font-weight: 500;
+}
+
+.risk-alert-moderate {
+  background: linear-gradient(135deg, #FFFDF5 0%, #FFFFFF 100%);
+  border: 1.5px solid #FDE68A;
+  border-left: 6px solid #D97706;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.risk-indicator-moderate {
+  background-color: #FEF3C7;
+  border: 1.5px solid #FDE68A;
+}
+
+.risk-recommendation-moderate {
+  background-color: #FFFBEB;
+  border-color: #FDE68A;
+  color: #92400E;
+}
+
+.risk-alert-lower {
+  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
+  border: 1.5px solid #99F6E4;
+  border-left: 6px solid #0D9488;
+  box-shadow: 0 4px 14px rgba(13, 148, 136, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.risk-indicator-lower {
+  background-color: #CCFBF1;
+  border: 1.5px solid #99F6E4;
+}
+
+.risk-recommendation-lower {
+  background-color: #F0FDFA;
+  border-color: #CCFBF1;
+  color: #115E59;
+}
+
+/* Awareness Section Embedding */
+.alerts-awareness-section {
+  width: 100%;
+  margin-top: 36px;
+  margin-bottom: 24px;
+}
+
+.guideline-source-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #475569;
+  background-color: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.alert-card-title {
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', sans-serif);
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0;
+}
+
+.alert-card-body {
+  margin-bottom: 18px;
+}
+
+.alert-recommendation-text {
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.55;
+  margin: 0;
+  background-color: #F8FAFC;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid #E2E8F0;
+}
+
+.alert-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 14px;
+  border-top: 1px solid #F1F5F9;
+  flex-wrap: wrap;
+}
+
+.alert-evidence-note {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #64748B;
+}
+
+.alert-btn-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-view-guideline {
+  background-color: #FFFFFF;
+  color: #2563EB;
+  border: 1px solid #BFDBFE;
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-view-guideline:hover {
+  background-color: #EFF6FF;
+  border-color: #2563EB;
+}
+
+.btn-schedule-action {
+  background: linear-gradient(135deg, #DC2626, #B91C1C);
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-schedule-action:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(220, 38, 38, 0.35);
+}
+
+/* Empty State */
+.alerts-empty-state-card {
+  background-color: #FFFFFF;
+  border-radius: 16px;
+  border: 1px solid #E2E8F0;
+  padding: 48px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.empty-icon-circle {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: #DCFCE7;
+  border: 2px solid #BBF7D0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.empty-state-title {
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', sans-serif);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #0F172A;
+  margin: 0 0 8px 0;
+}
+
+.empty-state-text {
+  font-size: 0.9rem;
+  color: #64748B;
+  max-width: 520px;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.empty-state-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.btn-action-primary {
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  color: #FFFFFF;
+  border: none;
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 10px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-action-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+.btn-action-secondary {
+  background-color: #FFFFFF;
+  color: #334155;
+  border: 1.5px solid #CBD5E1;
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 9px 18px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-action-secondary:hover {
+  background-color: #F8FAFC;
+  color: #0F172A;
+}
+
+/* Evidence Footer */
+.alerts-evidence-footer {
+  margin-top: 16px;
+}
+
+.evidence-footer-box {
+  background-color: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  border-radius: 12px;
+  padding: 16px 20px;
+}
+
+.evidence-footer-title {
+  font-family: var(--font-family-primary, 'Plus Jakarta Sans', sans-serif);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: #334155;
+  margin: 0 0 4px 0;
+}
+
+.evidence-footer-text {
+  font-size: 0.78rem;
+  color: #64748B;
+  margin: 0;
+  line-height: 1.45;
+}

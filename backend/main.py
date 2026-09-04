@@ -9,22 +9,32 @@ from brain.rule_engine import score_all_cancer_risks
 from brain.ml_layer import predict_ml_risk
 from brain.rag_llm_layer import generate_guidance
 from brain.chat_layer import generate_chat_reply
+import brain.db as db
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+# Initialize the SQLite persistence layer on startup
+db.init_db()
+
+app = FastAPI(title="OncoGuard API", version="6.0")
+
+@app.get("/")
+def health_check():
+    return {"status": "online", "version": "6.0", "name": "OncoGuard API"}
 
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "http://localhost:3000",   # actual Vite dev server port (see vite.config.ts)
-    "http://127.0.0.1:3000",
-    "http://localhost:5173",   # Vite's default — kept in case anything else assumes it
-    "http://127.0.0.1:5173",
-    ], # which frontend URL(s) can access the API.
-    allow_credentials=True, # Allows cookies/auth tokens to be sent.
-    allow_methods=["*"], # Which HTTP methods are permitted. (All)
-    allow_headers=["*"], # Which request headers are permitted. (All)
+        "http://localhost:3000",   # actual Vite dev server port
+        "http://127.0.0.1:3000",
+        "http://localhost:5173",   # Vite default port
+        "http://127.0.0.1:5173",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # ============================================================================
@@ -89,6 +99,7 @@ _MAX_MESSAGES_PER_REQUEST = 40
 class PatientInput(BaseModel):
     age: int
     gender: Gender
+    patient_id: str = "anonymous"
 
     # --- Lung fields: rule engine (unchanged) ---
     is_current_smoker: bool = False
@@ -269,6 +280,7 @@ def assessment(patient: PatientInput):
         cervical_iud_years=patient.cervical_iud_years,
         cervical_has_std_history=patient.cervical_has_std_history,
         cervical_std_count=patient.cervical_std_count,
+        patient_id=patient.patient_id,
     )
 
     # Layer 1: run the rule engine for every supported cancer type at once.
@@ -287,42 +299,81 @@ def assessment(patient: PatientInput):
                 "layer1": rule_result,
                 "layer2": None,
                 "layer3": None,
+                "escalation": None,
             }
             continue
 
-        # Layer 2 + Layer 3, isolated per cancer type (NEW). Layer 3 already
+        # Layer 2 + Layer 3, isolated per cancer type. Layer 3 already
         # degrades gracefully on its own (an LLM failure falls back to static
         # text inside generate_guidance() and never raises). This try/except
-        # is the outer safety net for anything ELSE unexpected - most
-        # plausibly Layer 2, which has no such fallback of its own: a bad
-        # model file, an unexpected SHAP shape, whatever. Without this, one
-        # cancer type raising turns the WHOLE multi-cancer response into a
-        # 500 - the patient loses lung+breast+cervical results just because,
-        # say, oral's placeholder path had an edge case. Layer 1's result
-        # (already computed above) is always safe to return regardless.
+        # is the outer safety net for anything ELSE unexpected.
         try:
             # Layer 2: XGBoost + SHAP if a trained model exists for this
-            # cancer type yet, otherwise a graceful Layer-1-only placeholder
-            # (see brain/ml_layer.py's _MODEL_REGISTRY).
+            # cancer type yet, otherwise a graceful Layer-1-only placeholder.
             ml_result = predict_ml_risk(profile, rule_result, cancer_type=cancer_type)
 
             # Layer 3: RAG-grounded guidance, cancer-type-aware.
             layer3_result = generate_guidance(rule_result, ml_result, cancer_type=cancer_type)
 
+            resolved_tier = most_severe_tier(rule_result.tier, ml_result.tier).value
+
+            # Save to SQLite and check 21-day longitudinal recurrence if patient_id provided
+            escalation = None
+            if patient.patient_id and patient.patient_id != "anonymous":
+                try:
+                    db.save_assessment(
+                        patient_id=patient.patient_id,
+                        cancer_type=cancer_type_value,
+                        overall_tier=resolved_tier,
+                        rule_score=rule_result.score,
+                        triggered_factors=rule_result.triggered_factors,
+                        ml_probability=ml_result.probability,
+                    )
+                    escalation = db.check_escalation(
+                        patient_id=patient.patient_id,
+                        cancer_type=cancer_type_value,
+                        window_days=21,
+                        threshold=3,
+                    )
+                except Exception as db_err:
+                    print(f"[assessment] DB save/escalation failed for {cancer_type_value}: {db_err}")
+
             report[cancer_type_value] = {
-                "overall_tier": most_severe_tier(rule_result.tier, ml_result.tier).value,
+                "overall_tier": resolved_tier,
                 "layer1": rule_result,
                 "layer2": ml_result,
                 "layer3": layer3_result,
+                "escalation": escalation,
             }
         except Exception as e:
             print(f"[assessment] {cancer_type_value}: Layer 2/3 failed unexpectedly, "
                   f"degrading to Layer-1-only for this cancer type. Error: {e}")
+            escalation = None
+            if patient.patient_id and patient.patient_id != "anonymous":
+                try:
+                    db.save_assessment(
+                        patient_id=patient.patient_id,
+                        cancer_type=cancer_type_value,
+                        overall_tier=rule_result.tier.value,
+                        rule_score=rule_result.score,
+                        triggered_factors=rule_result.triggered_factors,
+                        ml_probability=None,
+                    )
+                    escalation = db.check_escalation(
+                        patient_id=patient.patient_id,
+                        cancer_type=cancer_type_value,
+                        window_days=21,
+                        threshold=3,
+                    )
+                except Exception:
+                    pass
+
             report[cancer_type_value] = {
                 "overall_tier": rule_result.tier.value,
                 "layer1": rule_result,
                 "layer2": None,
                 "layer3": None,
+                "escalation": escalation,
             }
 
     return report
@@ -334,13 +385,6 @@ def chat(chat_request: ChatRequest, request: Request):
     for the full design (retrieval, grounding, safety check, degrade-gracefully
     behavior). Stateless: no DB yet (see README), so the frontend resends the
     whole conversation each turn.
-
-    Meant to replace the Frontend's current AIAssistantPage.tsx integration,
-    which calls Groq/Gemini directly from the browser today - ungrounded by
-    the ICMR/WHO protocol base and with client-exposed API keys (see README's
-    "Current Scope & Known Limitations"). This endpoint runs through the same
-    FAISS-grounded pipeline Layer 3 uses for the risk report, and keeps the
-    LLM key server-side like everything else in brain/.
     """
     _enforce_rate_limit(request)
 
@@ -370,3 +414,31 @@ def chat(chat_request: ChatRequest, request: Request):
         retrieved_sources=result.retrieved_sources,
         grounded=result.grounded,
     )
+
+
+# ============================================================================
+# 21-DAY LONGITUDINAL HISTORY & FOLLOW-UP ENDPOINTS
+# ============================================================================
+class FollowUpUpdateRequest(BaseModel):
+    assessment_id: int
+    status: Literal["no_followup", "pending", "completed"]
+
+
+@app.get("/api/v1/history/{patient_id}")
+def get_patient_history(patient_id: str, cancer_type: CancerType | None = None, limit: int = 50):
+    """
+    Retrieves longitudinal assessment history for a specific patient.
+    """
+    cancer_type_str = cancer_type.value if cancer_type else None
+    return db.get_history(patient_id=patient_id, cancer_type=cancer_type_str, limit=limit)
+
+
+@app.post("/api/v1/followup/update")
+def update_followup(req: FollowUpUpdateRequest):
+    """
+    Updates the follow-up status for an assessment record.
+    """
+    success = db.update_followup_status(req.assessment_id, req.status)
+    if not success:
+        raise HTTPException(status_code=404, detail="Assessment record not found")
+    return {"status": "success", "assessment_id": req.assessment_id, "followup_status": req.status}

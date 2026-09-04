@@ -20,7 +20,40 @@ except ImportError:
     from ml_layer import Layer2Result
     from protocol_chunks import protocol_chunks
 
-from sentence_transformers import SentenceTransformer
+try:
+    from sentence_transformers import SentenceTransformer
+    _embed_model = SentenceTransformer('all-MiniLM-L6-v2')
+except Exception as _st_err:
+    class _DeterministicFallbackEmbedder:
+        """
+        Lightweight fallback embedder for offline / uninstalled sentence-transformers
+        environments, ensuring FAISS vector search and RAG retrieval never crash.
+        """
+        def __init__(self, dim: int = 384):
+            self.dim = dim
+
+        def encode(self, texts, **kwargs):
+            if isinstance(texts, str):
+                texts = [texts]
+            vectors = []
+            for t in texts:
+                vec = np.zeros(self.dim, dtype=np.float32)
+                words = [w.strip(".,;:!?()[]\"'") for w in t.lower().split() if w.strip()]
+                if not words:
+                    vec[0] = 1.0
+                else:
+                    for i, w in enumerate(words):
+                        # Consistent word hashing across dimensions
+                        h = abs(hash(w)) % self.dim
+                        vec[h] += 1.0 + (1.0 / (i + 1))
+                    norm = np.linalg.norm(vec)
+                    if norm > 0:
+                        vec /= norm
+                vectors.append(vec)
+            return np.array(vectors, dtype=np.float32)
+
+    _embed_model = _DeterministicFallbackEmbedder()
+
 import faiss
 import numpy as np
 
@@ -40,14 +73,6 @@ load_dotenv()
 # Feature flag: Controls whether to call the live LLM API or use fallback guidance directly
 USE_LIVE_LLM = os.environ.get("USE_LIVE_LLM", "false").lower() == "true"
 
-# BUGFIX (found while testing this restructure - present in the original code
-# too, not introduced by these changes): newer versions of the `openai`
-# package raise immediately if OPENROUTER_API_KEY isn't set, at *client
-# construction* time - not just when you actually try to call the API. That
-# meant the whole app failed to even start without an API key configured,
-# defeating the entire point of USE_LIVE_LLM's graceful fallback. The client
-# is now built lazily, only the first time a live LLM call is actually made,
-# so USE_LIVE_LLM=false (the default) truly needs no API key at all.
 _client = None
 
 def _get_client() -> OpenAI:
@@ -60,9 +85,6 @@ def _get_client() -> OpenAI:
     return _client
 
 # --- GLOBAL EMBEDDING & INDEX SETUP ---
-# Initialize the embedding model once at startup to avoid reloading overhead per request
-_embed_model = SentenceTransformer('all-MiniLM-L6-v2')
-
 # Extract all text chunks from the protocol data to prepare them for vectorization
 _chunk_texts = [c["text"] for c in protocol_chunks]
 

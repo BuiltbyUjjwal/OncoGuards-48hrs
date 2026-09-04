@@ -44,6 +44,7 @@ def most_severe_tier(*tiers: RiskTier) -> RiskTier:
 class PatientProfile:
     age: int
     gender: Gender
+    patient_id: str = "anonymous"
 
     # --- Lung-related fields used by the RULE ENGINE (Layer 1) ---
     # These are untouched by the ML dataset swap below. score_lung_cancer_risk()

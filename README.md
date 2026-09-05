@@ -18,9 +18,10 @@ ready for a fourth model.
 - [Architecture](#architecture)
 - [Repository Structure](#repository-structure)
 - [Tech Stack](#tech-stack)
+- [Frontend Overview](#frontend-overview)
 - [Getting Started](#getting-started)
-  - [Backend](#backend-setup)
-  - [Frontend](#frontend-setup)
+  - [Backend Setup](#backend-setup)
+  - [Frontend Setup](#frontend-setup)
 - [API Reference](#api-reference)
 - [Cancer Type Coverage](#cancer-type-coverage)
 - [Current Scope & Known Limitations](#current-scope--known-limitations)
@@ -32,36 +33,22 @@ ready for a fourth model.
 ## Architecture
 
 OncoGuard's backend runs every submitted patient profile through three layers, in order,
-for **each** cancer type in a single request:
+for **each** cancer type in a single request.
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│  Layer 1 — Rule Engine            brain/rule_engine.py                │
-│  Deterministic, CAUTION-style weighted scoring per cancer type.       │
-│  No ML, no network calls — pure Python logic. Always runs.            │
-│  Output: score (0–100), tier (low/medium/high), triggered_factors     │
-└─────────────────────────────────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  Layer 2 — ML Layer                brain/ml_layer.py                  │
-│  XGBoost classifier + SHAP TreeExplainer, one trained model per       │
-│  cancer type (via a model registry). Falls back to a graceful         │
-│  "no model yet" placeholder for cancer types without a trained model. │
-│  Output: probability, tier, top_factors, protective_factors           │
-└─────────────────────────────────────────────────────────────────────┘
-                                  │
-                                  ▼
-┌─────────────────────────────────────────────────────────────────────┐
-│  Layer 3 — RAG + LLM               brain/rag_llm_layer.py             │
-│  Embeds Layer 1 + Layer 2 output (all-MiniLM-L6-v2), retrieves the    │
-│  most relevant clinical protocol chunks via FAISS, and generates      │
-│  patient-facing guidance through an LLM — grounded in what was        │
-│  retrieved, not the model's raw knowledge.                            │
-│  Output: guidance_text, recommended_actions, retrieved_sources,       │
-│          timeline_urgency                                             │
-└─────────────────────────────────────────────────────────────────────┘
-```
+**Layer 1 — Rule Engine** (`brain/rule_engine.py`): Deterministic, CAUTION-style weighted
+scoring per cancer type. No ML, no network calls — pure Python logic. Always runs.
+Output: score (0–100), tier (low/medium/high), triggered_factors.
+
+**Layer 2 — ML Layer** (`brain/ml_layer.py`): XGBoost classifier + SHAP TreeExplainer,
+one trained model per cancer type (via a model registry). Falls back to a graceful
+"no model yet" placeholder for cancer types without a trained model.
+Output: probability, tier, top_factors, protective_factors.
+
+**Layer 3 — RAG + LLM** (`brain/rag_llm_layer.py`): Embeds Layer 1 + Layer 2 output
+(all-MiniLM-L6-v2), retrieves the most relevant clinical protocol chunks via FAISS, and
+generates patient-facing guidance through an LLM — grounded in what was retrieved, not
+the model's raw knowledge.
+Output: guidance_text, recommended_actions, retrieved_sources, timeline_urgency.
 
 **Why layered like this, specifically:** the rule engine is a safety net that always
 produces a result even if the ML model or the LLM API is unavailable. Layer 2 adds
@@ -78,7 +65,7 @@ dataset — scoring MEDIUM, and the system showing the less urgent result to the
 
 ### A separate, unrelated AI feature: the Frontend "AI Assistant" chat
 
-Worth knowing before a judge asks about it: `Frontend/src/AIAssistantPage.tsx` is a
+Worth knowing before a judge asks about it: `frontend/src/AIAssistantPage.tsx` is a
 **second, independent chat feature** that calls Groq/Gemini directly from the browser.
 It is not part of the 3-layer pipeline above, is not grounded by the FAISS/ICMR
 retrieval step, and is a separate architectural decision from Layer 3. See
@@ -89,36 +76,86 @@ retrieval step, and is a separate architectural decision from Layer 3. See
 ## Repository Structure
 
 ```
-OncoGuard/
-├── Backend/
+OncoGuards-48hrs/
+├── backend/
 │   ├── brain/
-│   │   ├── rule_engine.py        # Layer 1 — all 4 cancer types, one file (see design note in-file)
-│   │   ├── ml_layer.py           # Layer 2 — XGBoost + SHAP, model registry + clinically-defensible allowlist
+│   │   ├── rule_engine.py        # Layer 1 — all 4 cancer types, one file
+│   │   ├── ml_layer.py           # Layer 2 — XGBoost + SHAP, model registry + allowlist
 │   │   ├── rag_llm_layer.py      # Layer 3 — FAISS retrieval + OpenRouter LLM guidance
-│   │   └── protocol_chunks.py    # Layer 3's clinical knowledge base (26 chunks, tagged by cancer type)
+│   │   ├── protocol_chunks.py    # Layer 3's clinical knowledge base (26 chunks, tagged by cancer type)
+│   │   ├── chat_layer.py         # AI Assistant backend layer (Groq/Gemini routing)
+│   │   ├── db.py                 # SQLite database helpers (assessment persistence)
+│   │   └── oncoguard.db          # SQLite database file (gitignored in prod)
 │   ├── datasets/                 # training data — gitignored, not committed
 │   ├── models/                   # trained XGBoost models (lung, breast, cervical)
 │   ├── notebooks/                # one training notebook per cancer type
-│   ├── main.py                   # FastAPI app — single POST /api/v1/assessment endpoint
+│   ├── main.py                   # FastAPI app — /api/v1/assessment + additional endpoints
 │   ├── schemas.py                # PatientProfile, Gender/RiskTier/CancerType enums, most_severe_tier()
-│   ├── requirements.txt
-│   ├── env.example
-│   └── Dockerfile
+│   ├── test_suite.py             # Backend test suite
+│   └── requirements.txt
 │
-└── Frontend/
+├── env.example                   # Root-level env template (backend vars)
+│
+└── frontend/
     ├── src/
-    │   ├── components/           # Sidebar, MobileBottomNav, RiskGaugeSemiCircle, forms, etc.
-    │   ├── context/               # AssessmentContext, AuthContext (Firebase), LanguageContext, ThemeContext
-    │   ├── config/                 # firebase.ts, screeningGuidelines.ts
-    │   ├── i18n/                   # i18next setup + en / hi locale files
-    │   ├── styles/                 # one CSS file per page
-    │   ├── types/                  # assessment.ts
-    │   ├── *Page.tsx               # one file per screen (Login, Dashboard, 5-step Assessment, Results, ...)
-    │   └── main.tsx / App.tsx
+    │   ├── assets/               # MedicalIcons.tsx (SVG icon components),
+    │   │                         # HealthcareIllustration.tsx (hero illustration)
+    │   ├── components/           # Reusable UI — Sidebar, MobileBottomNav, RiskGaugeSemiCircle,
+    │   │                         # ScreeningAlertBanner, AssessmentSidePanel, LoginForm,
+    │   │                         # SignUpForm, BrandLogo, BreastSelfExamModal, HealthAwareness,
+    │   │                         # PasswordStrengthIndicator, TrustPoints, RibbonIcon
+    │   ├── context/              # AssessmentContext (Firestore persistence + local state),
+    │   │                         # AuthContext (Firebase Auth), LanguageContext, ThemeContext
+    │   ├── config/
+    │   │   ├── api.ts            # API_BASE_URL constant (reads VITE_API_BASE_URL env var)
+    │   │   ├── firebase.ts       # Firebase project config
+    │   │   └── screeningGuidelines.ts  # CANCER_SCREENING_CONFIG, alert helpers, disclaimers
+    │   ├── i18n/                 # i18next setup + en / hi locale files
+    │   ├── styles/               # One CSS file per page + shared variables.css
+    │   ├── types/                # assessment.ts — CancerResultItem, RiskTier, AssessmentState
+    │   │
+    │   │   ── Auth & Account ──
+    │   ├── LoginPage.tsx                      # Firebase email/password login
+    │   ├── SignUpPage.tsx                     # New account registration
+    │   ├── ForgotPasswordPage.tsx             # Password reset via Firebase
+    │   │
+    │   │   ── Core App ──
+    │   ├── DashboardPage.tsx                  # Main hub — risk summary, quick actions, alerts
+    │   ├── ProfilePage.tsx                    # User profile & assessment history
+    │   ├── SettingsPage.tsx                   # App preferences, language, theme, notifications
+    │   ├── PlaceholderPage.tsx                # Generic placeholder for in-progress routes
+    │   │
+    │   │   ── Multi-step Health Profile Assessment ──
+    │   ├── RiskAssessmentIntroPage.tsx        # Assessment entry point & section overview
+    │   ├── BasicInfoSectionPage.tsx           # Step 1: Age, sex, height/weight, location
+    │   ├── LifestyleSectionPage.tsx           # Step 2: Smoking, alcohol, diet, exercise, occupation
+    │   ├── MedicalHistorySectionPage.tsx      # Step 3: Family history, prior conditions, medications
+    │   ├── WomenOnlySectionPage.tsx           # Step 4 (female only): Reproductive & hormonal history
+    │   ├── ScreeningHistorySectionPage.tsx    # Step 5 (female) / Step 4 (male): Prior screening dates
+    │   ├── SymptomsSectionPage.tsx            # Step 6: Current symptoms (duration, severity, type)
+    │   ├── ReviewAnswersPage.tsx              # Full profile review before submission
+    │   ├── SubmitAnalyzePage.tsx              # Multi-stage animated submission → backend API call
+    │   │
+    │   │   ── Results & Reports ──
+    │   ├── ResultsPage.tsx                    # Risk results with semi-circular gauge per cancer type
+    │   ├── DetailedReportPage.tsx             # Full explainable report (Layer 1+2+3 breakdown)
+    │   ├── ExplanationRecommendationsPage.tsx # Why this risk tier + what to do next
+    │   ├── ReportsDashboardPage.tsx           # Saved reports history (Firestore-backed)
+    │   │
+    │   │   ── Health & Awareness ──
+    │   ├── AlertsPage.tsx                     # Personalized screening alerts & overdue reminders
+    │   ├── DailySymptomHistoryPage.tsx        # Symptom timeline tracker & daily log history
+    │   ├── CancerAwarenessPage.tsx            # Cancer awareness & health guidelines hub
+    │   ├── AIAssistantPage.tsx                # Standalone Groq/Gemini chat (separate from pipeline)
+    │   │
+    │   ├── App.tsx               # Root router — 22 named hash routes, auth guards, PWA prompt
+    │   └── main.tsx
+    ├── index.html
     ├── public/
     ├── package.json
-    ├── vite.config.ts
-    └── .env.example
+    ├── tsconfig.json
+    ├── tsconfig.node.json
+    └── vite.config.ts
 ```
 
 ---
@@ -134,6 +171,66 @@ Firebase (Auth + Firestore + Storage) · i18next (English/Hindi) · `html2pdf.js
 
 ---
 
+## Frontend Overview
+
+The frontend is a fully hash-routed single-page application (no React Router dependency)
+with 22 named routes managed in `App.tsx`. The assessment flow is split into distinct
+section pages, with gender-adaptive branching: female users get the `WomenOnlySectionPage`
+step; male users skip it and flow directly from `MedicalHistorySectionPage` to
+`ScreeningHistorySectionPage`.
+
+### Assessment Flow (in order)
+
+| Step | Hash Route | Page |
+|:---:|---|---|
+| — | `#health-profile` | `RiskAssessmentIntroPage` — overview & section guide |
+| 1 | `#assessment-step1` | `BasicInfoSectionPage` — age, sex, height/weight, location |
+| 2 | `#assessment-step2` | `LifestyleSectionPage` — smoking, alcohol, diet, exercise, occupation |
+| 3 | `#assessment-step3` | `MedicalHistorySectionPage` — family history, conditions, medications |
+| 4 | `#assessment-step4` | `WomenOnlySectionPage` — **female only**: reproductive & hormonal history |
+| 5 | `#assessment-step-screening` | `ScreeningHistorySectionPage` — prior screening dates |
+| 6 | `#assessment-symptoms` | `SymptomsSectionPage` — current symptoms, duration, severity |
+| — | `#health-profile-review` | `ReviewAnswersPage` — full answer review before submit |
+| — | `#assessment-analyzing` | `SubmitAnalyzePage` — animated 4-stage UI + `POST /api/v1/assessment` |
+| — | `#assessment-results` | `ResultsPage` — semi-circular risk gauge per cancer type |
+| — | `#assessment-report` | `DetailedReportPage` — Layer 1 + 2 + 3 full breakdown |
+| — | `#assessment-explanation` | `ExplanationRecommendationsPage` — why + next steps |
+
+### Other Application Screens
+
+| Hash Route | Page | Purpose |
+|---|---|---|
+| `#dashboard` | `DashboardPage` | Main hub — risk summary, alerts, quick actions |
+| `#profile` | `ProfilePage` | User profile & historical assessments |
+| `#reports` | `ReportsDashboardPage` | Saved assessment reports (Firestore-backed) |
+| `#alerts` | `AlertsPage` | Personalized overdue screening reminders |
+| `#symptoms` | `DailySymptomHistoryPage` | Daily symptom log & timeline tracker |
+| `#cancer-awareness` | `CancerAwarenessPage` | Cancer awareness content & guidelines |
+| `#settings` | `SettingsPage` | Language, theme, notification preferences |
+| `#ai-assistant` | `AIAssistantPage` | Standalone Groq/Gemini chat (not pipeline-grounded) |
+
+### Key Frontend Design Decisions
+
+- **Hash-based routing** — No React Router. All 22 routes are mapped via
+  `window.location.hash` in `App.tsx`; back/forward navigation works via a
+  `hashchange` listener.
+- **AssessmentContext** — Global context holds the entire multi-step assessment state in
+  memory and persists it to Firestore per authenticated user. `getBackendPayload()`
+  serializes the full state into the exact shape `POST /api/v1/assessment` expects.
+- **API config centralized** — `src/config/api.ts` exports `API_BASE_URL`
+  (reads `VITE_API_BASE_URL`, falls back to `http://127.0.0.1:8000`). Previously the
+  API URL was hardcoded inline in `SubmitAnalyzePage.tsx`.
+- **Screening guidelines centralized** — `src/config/screeningGuidelines.ts` is the
+  single source of truth for `CANCER_SCREENING_CONFIG`, alert generation logic, and the
+  `CLINICAL_DISCLAIMER` string used across `AlertsPage`, `ResultsPage`,
+  `ExplanationRecommendationsPage`, and `SubmitAnalyzePage`.
+- **PWA support** — `vite-plugin-pwa` provides offline capability. An in-app install
+  banner is managed directly in `App.tsx` using the `beforeinstallprompt` event.
+- **i18n** — English and Hindi locale files in `src/i18n/locales/`. All user-facing
+  strings go through `useTranslation()`.
+
+---
+
 ## Getting Started
 
 ### Prerequisites
@@ -146,11 +243,11 @@ Firebase (Auth + Firestore + Storage) · i18next (English/Hindi) · `html2pdf.js
 ### Backend Setup
 
 ```bash
-cd Backend
+cd backend
 python -m venv venv
 source venv/bin/activate        # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-cp env.example .env
+cp ../env.example .env           # env.example lives at the repo root
 uvicorn main:app --reload
 ```
 
@@ -162,7 +259,7 @@ The API comes up at `http://127.0.0.1:8000`, with interactive Swagger docs at
 > what `main.py` needs at runtime. Expect the install to take a few minutes on a clean
 > machine — worth doing once, well before the demo, not live on stage.
 
-**Backend environment variables** (`Backend/.env`, copied from `env.example`):
+**Backend environment variables** (copy from root `env.example` → `backend/.env`):
 
 | Variable | Required? | Purpose |
 |---|---|---|
@@ -172,25 +269,26 @@ The API comes up at `http://127.0.0.1:8000`, with interactive Swagger docs at
 ### Frontend Setup
 
 ```bash
-cd Frontend
+cd frontend
 npm install
-cp .env.example .env.local
 npm run dev
 ```
+
+> **Note:** There is no `.env.example` in the `frontend/` directory. Create a `.env.local`
+> file manually and add the variables you need from the table below.
 
 Runs at `http://localhost:3000` (set in `vite.config.ts` — not Vite's usual 5173; the
 backend's CORS `allow_origins` list in `main.py` is already configured for both, so
 either works).
 
-**Frontend environment variables** — `.env.example` is currently out of date; here's
-what the code actually reads:
+**Frontend environment variables** (create `frontend/.env.local` manually):
 
 | Variable | Required? | Used by | Notes |
 |---|---|---|---|
-| `VITE_API_BASE_URL` | Recommended | `SubmitAnalyzePage.tsx` | Backend URL. Defaults to `http://127.0.0.1:8000` if unset — fine for local dev, **must** be set once the backend is deployed anywhere else. |
-| `VITE_GEMINI_API_KEY` / `VITE_GEMINI_API_KEY_1` | Optional | `AIAssistantPage.tsx` | Powers the standalone AI Assistant chat page via Gemini. Independent of the backend's Layer 3. |
+| `VITE_API_BASE_URL` | Recommended | `src/config/api.ts` → `SubmitAnalyzePage.tsx` | Backend URL. Defaults to `http://127.0.0.1:8000` if unset — fine for local dev, **must** be set once the backend is deployed anywhere else. |
+| `VITE_GEMINI_API_KEY` / `VITE_GEMINI_API_KEY_1` | Optional | `AIAssistantPage.tsx` | Powers the standalone AI Assistant chat via Gemini. Independent of the backend's Layer 3. |
 | `VITE_GEMINI_API_KEY_2` / `VITE_GEMINI_API_KEY_3` | Optional | `AIAssistantPage.tsx` | Despite the shared "GEMINI" naming, these are checked against a `gsk_` prefix and sent to Groq's API as fallback keys — naming is misleading, worth a rename. |
-| `VITE_CLERK_PUBLISHABLE_KEY` | **Unused** | — | Listed in `.env.example`, but the app authenticates via Firebase (`src/config/firebase.ts`), not Clerk. Safe to leave blank or delete from `.env.example`. |
+| `VITE_CLERK_PUBLISHABLE_KEY` | **Unused** | — | Listed in `.env.example`, but the app authenticates via Firebase (`src/config/firebase.ts`), not Clerk. Safe to leave blank or delete. |
 
 Firebase itself needs **no** environment variable — its config object is currently
 hardcoded directly in `src/config/firebase.ts`.

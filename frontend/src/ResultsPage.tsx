@@ -12,7 +12,6 @@ import {
   ClockIcon,
   AlertCircleIcon,
   ReportsFileIcon,
-  CheckCircleIcon,
 } from './assets/MedicalIcons';
 import './styles/ResultsPage.css';
 
@@ -141,19 +140,6 @@ export const ResultsPage: React.FC<ResultsPageProps> = ({
   const recommendationTitle = isTie 
     ? t('results.personalizedScreening', 'Personalized Screening Recommendations')
     : `${highestScoringCards[0]?.displayName || 'Cancer'} ${t('results.screeningRecommendation', 'Screening Recommendation')}`;
-
-  const getTierClass = (tier: string) => {
-    const t = tier.toLowerCase();
-    if (t.includes('low')) return 'tier-low';
-    if (t.includes('mod')) return 'tier-mod';
-    if (t.includes('high')) return 'tier-high';
-    return 'tier-na';
-  };
-
-  const formatTierText = (tier: string) => {
-    if (tier === 'not_applicable') return 'Not Applicable';
-    return tier;
-  };
 
   // Dynamic Key Factors with Influence Tags
   const dynamicKeyFactors = [

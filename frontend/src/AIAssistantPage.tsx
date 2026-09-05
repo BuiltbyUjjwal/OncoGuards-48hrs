@@ -5,6 +5,7 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { AssistantBotIcon, SecureShieldIcon, UserIcon } from './assets/MedicalIcons';
 import { useAuth } from './context/AuthContext';
 import { useAssessment } from './context/AssessmentContext';
+import { API_BASE_URL } from './config/api';
 import './styles/DashboardPage.css';
 
 interface Message {
@@ -102,8 +103,7 @@ export const AIAssistantPage: React.FC<AIAssistantPageProps> = ({
         { role: 'user' as const, content: userText }
       ];
 
-      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
-      const resp = await fetch(`${apiBaseUrl}/api/v1/chat`, {
+      const resp = await fetch(`${API_BASE_URL}/api/v1/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

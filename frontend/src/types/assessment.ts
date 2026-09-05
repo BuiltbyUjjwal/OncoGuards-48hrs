@@ -475,7 +475,7 @@ export function buildAssessmentPayload(
   const { basicInfo, lifestyle, medicalHistory, womenOnly, screeningHistory } = state;
   const symptoms = overrideSymptoms || state.symptoms;
 
-  const ageNum = parseInt(basicInfo.age || '0', 10) || 0;
+  const ageNum = parseInt(basicInfo.age || '40', 10) || 40;
   const rawSex = (basicInfo.biological_sex || basicInfo.biologicalSex || 'other').toLowerCase();
   const gender: 'male' | 'female' | 'other' =
     rawSex === 'male' || rawSex === 'female' ? rawSex : 'other';

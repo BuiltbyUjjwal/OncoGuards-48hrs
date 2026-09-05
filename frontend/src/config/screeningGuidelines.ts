@@ -28,7 +28,7 @@ export const CLINICAL_DISCLAIMER =
 export const CANCER_SCREENING_CONFIG: Record<'breast' | 'cervical' | 'lung' | 'oral', CancerScreeningInfo> = {
   breast: {
     cancerType: 'Breast',
-    displayName: 'Breast Cancer',
+    displayName: 'Breast Health',
     testName: 'Screening Mammography',
     testModality: 'Digital Bilateral Mammogram / Clinical Breast Examination (CBE)',
     recommendedAgeRange: '40–74 years',
@@ -47,7 +47,7 @@ export const CANCER_SCREENING_CONFIG: Record<'breast' | 'cervical' | 'lung' | 'o
   },
   cervical: {
     cancerType: 'Cervical',
-    displayName: 'Cervical Cancer',
+    displayName: 'Cervical Health',
     testName: 'Pap Smear / High-Risk HPV DNA Test',
     testModality: 'Cervical Cytology (Pap) / Primary High-Risk HPV Test',
     recommendedAgeRange: '21–65 years',
@@ -66,7 +66,7 @@ export const CANCER_SCREENING_CONFIG: Record<'breast' | 'cervical' | 'lung' | 'o
   },
   lung: {
     cancerType: 'Lung',
-    displayName: 'Lung Cancer',
+    displayName: 'Lung Health',
     testName: 'Low-Dose Computed Tomography (LDCT)',
     testModality: 'Non-contrast Chest Low-Dose CT',
     recommendedAgeRange: '50–80 years (smokers / ex-smokers)',
@@ -85,7 +85,7 @@ export const CANCER_SCREENING_CONFIG: Record<'breast' | 'cervical' | 'lung' | 'o
   },
   oral: {
     cancerType: 'Oral',
-    displayName: 'Oral & Oropharyngeal Cancer',
+    displayName: 'Oral & Oropharyngeal Health',
     testName: 'Comprehensive Oral Visual & Mucosal Examination',
     testModality: 'Clinical Inspection and Palpation of Oral Cavity, Tongue & Cervical Lymph Nodes',
     recommendedAgeRange: 'All adults, especially age 18+ with tobacco or alcohol history',
